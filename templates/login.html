@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Control - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #111827; }
+        .messageDiv {
+            background-color: hsl(327, 90%, 28%);
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            display: none;
+        }
+        .successDiv {
+            background-color: hsl(142, 76%, 36%);
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            display: none;
+        }
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: #9CA3AF;
+        }
+        .eye-button {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9CA3AF;
+            padding: 4px;
+        }
+
+        .eye-button:hover {
+            color: #D1D5DB;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-300 flex items-center justify-center p-4">
+    <div class="bg-gray-800 shadow-xl rounded-2xl p-8 max-w-md w-full border border-gray-700">
+
+        <!-- Logo/Icon -->
+        <div class="flex justify-center mb-6">
+             <!-- Key Icon -->
+             <svg class="w-16 h-16 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.566-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+             </svg>
+        </div>
+
+        <h2 class="text-3xl font-bold text-center text-white mb-8">System Login</h2>
+
+        <!-- Display errors passed from app.py -->
+        {% if error %}
+            <div class="bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded relative mb-6 text-sm" role="alert">
+                <span class="block sm:inline">{{ error }}</span>
+            </div>
+        {% endif %}
+
+        <!-- Message divs for JavaScript messages -->
+        <div id="signInMessage" class="messageDiv" style="display:none"></div>
+        <div id="successMessage" class="successDiv" style="display:none"></div>
+
+        <form action="{{ url_for('login') }}" method="POST" class="space-y-6" id="loginForm">
+            <div class="relative">
+                <label for="email" class="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
+                <div class="relative">
+                    <!-- Email SVG Icon -->
+                    <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                    </svg>
+                    <input type="email" name="email" id="email" required autocomplete="email"
+                           class="pl-10 mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm placeholder-gray-500">
+                </div>
+                <div id="emailError" class="text-red-400 text-xs mt-1 hidden"></div>
+            </div>
+
+            <div class="relative">
+                <label for="password" class="block text-sm font-medium text-gray-400 mb-2">Password</label>
+                <div class="relative">
+                    <!-- Password SVG Icon -->
+                    <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                    </svg>
+                    
+                    <input type="password" name="password" id="password" required autocomplete="current-password"
+                        class="pl-10 pr-10 mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm placeholder-gray-500">
+                    
+                    <!-- Eye SVG Icon for Show/Hide Password -->
+                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 focus:outline-none">
+                        <svg id="eyeIcon" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <!-- Eye closed (default when password is hidden) -->
+                            <path id="eyeOpen" stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path id="eyeOpenLine" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            
+                            <!-- Eye slashed (when password is visible) -->
+                            <path id="eyeClosed" class="hidden" stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="passwordError" class="text-red-400 text-xs mt-1 hidden"></div>
+            </div>
+
+            <div>
+                <button type="submit"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500 transition-colors duration-150">
+                    Login
+                </button>
+            </div>
+        </form>
+
+        <p class="mt-8 text-center text-sm text-gray-500">
+            Need access?
+            <a href="{{ url_for('register') }}" class="font-medium text-blue-500 hover:text-blue-400">
+                Register here
+            </a>
+        </p>
+    </div>
+
+    <script>
+        // Message display function
+        function showMessage(message, divId, isSuccess = false) {
+            var messageDiv = document.getElementById(divId);
+            if (!messageDiv) {
+                console.error('Message div not found:', divId);
+                return;
+            }
+            
+            messageDiv.style.display = "block";
+            messageDiv.innerHTML = message;
+            messageDiv.style.opacity = 1;
+            
+            setTimeout(function() {
+                messageDiv.style.opacity = 0;
+                setTimeout(function() {
+                    messageDiv.style.display = "none";
+                }, 500);
+            }, 3000);
+        }
+
+        // Show field error
+        function showFieldError(fieldId, message) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('hidden');
+                
+                // Highlight the input field
+                const inputField = document.getElementById(fieldId);
+                if (inputField) {
+                    inputField.classList.add('border-red-500');
+                    inputField.classList.remove('border-gray-600');
+                }
+            }
+        }
+
+        // Clear field error
+        function clearFieldError(fieldId) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            if (errorDiv) {
+                errorDiv.classList.add('hidden');
+                
+                // Remove highlight from input field
+                const inputField = document.getElementById(fieldId);
+                if (inputField) {
+                    inputField.classList.remove('border-red-500');
+                    inputField.classList.add('border-gray-600');
+                }
+            }
+        }
+
+        // Validate email format
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Validate form
+        function validateForm(email, password) {
+            let isValid = true;
+            
+            // Clear previous errors
+            clearFieldError('email');
+            clearFieldError('password');
+            
+            // Validate email
+            if (!email) {
+                showFieldError('email', 'Email is required');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showFieldError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            // Validate password
+            if (!password) {
+                showFieldError('password', 'Password is required');
+                isValid = false;
+            } else if (password.length < 6) {
+                showFieldError('password', 'Password must be at least 6 characters');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        // Detect specific error types from server response
+        function detectErrorType(errorMessage) {
+            const message = errorMessage.toLowerCase();
+            
+            if (message.includes('password') || message.includes('wrong') || message.includes('invalid credential')) {
+                return 'password';
+            } else if (message.includes('email') || message.includes('user not found') || message.includes('invalid email')) {
+                return 'email';
+            } else {
+                return 'general';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const registered = urlParams.get('registered');
+            
+            if (registered === 'success') {
+                showMessage('Successfully registered! Please log in.', 'signInMessage');
+
+            }
+
+                        // Add password visibility toggle
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            if (togglePasswordBtn) {
+                togglePasswordBtn.addEventListener('click', togglePasswordVisibility);
+                
+                // Also allow Enter key on the button for accessibility
+                togglePasswordBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        togglePasswordVisibility();
+                    }
+                });
+            }
+
+            // Add real-time validation
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            
+            if (emailInput) {
+                emailInput.addEventListener('blur', function() {
+                    const email = this.value.trim();
+                    if (email && !isValidEmail(email)) {
+                        showFieldError('email', 'Please enter a valid email address');
+                    } else {
+                        clearFieldError('email');
+                    }
+                });
+                
+                emailInput.addEventListener('input', function() {
+                    clearFieldError('email');
+                });
+            }
+            
+            if (passwordInput) {
+                passwordInput.addEventListener('blur', function() {
+                    const password = this.value;
+                    if (password && password.length < 6) {
+                        showFieldError('password', 'Password must be at least 6 characters');
+                    } else {
+                        clearFieldError('password');
+                    }
+                });
+                
+                passwordInput.addEventListener('input', function() {
+                    clearFieldError('password');
+                });
+            }
+
+            // Add form submission handler
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    const email = document.getElementById('email')?.value.trim();
+                    const password = document.getElementById('password')?.value;
+                    
+                    // Clear previous field errors
+                    clearFieldError('email');
+                    clearFieldError('password');
+                    
+                    if (!validateForm(email, password)) {
+                        e.preventDefault();
+                        return;
+                    }
+                });
+            }
+
+            // Check if there was an error from Flask and show specific field errors
+            const flaskError = "{{ error }}" || "";
+            if (flaskError && flaskError !== "None" && flaskError !== "") {
+                const errorType = detectErrorType(flaskError);
+                
+                if (errorType === 'password') {
+                    showFieldError('password', 'Wrong password. Please try again.');
+                    showMessage('Incorrect password', 'signInMessage');
+                } else if (errorType === 'email') {
+                    showFieldError('email', 'Email not found or invalid');
+                
+                }
+            }
+
+            // Toggle password visibility
+            function togglePasswordVisibility() {
+                const passwordInput = document.getElementById('password');
+                const eyeIcon = document.getElementById('eyeIcon');
+                const eyeOpen = document.getElementById('eyeOpen');
+                const eyeOpenLine = document.getElementById('eyeOpenLine');
+                const eyeClosed = document.getElementById('eyeClosed');
+                
+                if (passwordInput.type === 'password') {
+                    // Show password
+                    passwordInput.type = 'text';
+                    eyeOpen.classList.add('hidden');
+                    eyeOpenLine.classList.add('hidden');
+                    eyeClosed.classList.remove('hidden');
+                } else {
+                    // Hide password
+                    passwordInput.type = 'password';
+                    eyeOpen.classList.remove('hidden');
+                    eyeOpenLine.classList.remove('hidden');
+                    eyeClosed.classList.add('hidden');
+                }
+            }
+
+            // Check if there was a success message (from successful login)
+            const flaskSuccess = "{{ success }}" || "";
+            if (flaskSuccess && flaskSuccess !== "None" && flaskSuccess !== "") {
+                showMessage(flaskSuccess, 'successMessage');
+                // Redirect to verify page after showing success message
+                setTimeout(function() {
+                    window.location.href = "{{ url_for('verify') }}";
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
