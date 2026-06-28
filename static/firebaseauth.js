@@ -5,7 +5,7 @@
 
   // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyAyZIESMLPZrR12UKiHksS-W_hJYSA_NHg",
+    apiKey: "YOUR_OWN_API_KEY",
     authDomain: "facial-recorgnition-data.firebaseapp.com",
     projectId: "facial-recorgnition-data",
     storageBucket: "facial-recorgnition-data.appspot.com",
