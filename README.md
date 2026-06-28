@@ -67,7 +67,6 @@ Setup
 ```bash
 git clone https://github.com/naksMann/facial-recognition-access-control.git
 cd facial-recognition-access-control/backend
-pip install -r requirements.txt
 python app.py
 ```
 You will need to add your own Firebase configuration and flash the ESP32 with the firmware in the `esp32/` folder.
