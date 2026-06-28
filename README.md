@@ -42,15 +42,23 @@ Repository contents
 ```
 facial-recognition-access-control/
 ├── README.md
+├── .gitignore
+├── LICENSE
+├── backend/
+│   └── app.py                    # Flask server and recognition logic
 ├── docs/
 │   └── Facial_Recognition_Documentation.pdf
-├── backend/
-│   ├── app.py                 # Flask server and recognition logic
-│   └── requirements.txt
 ├── esp32/
-│   └── lock_control.ino       # Microcontroller firmware
-├── dashboard/                 # Web interface
-└── screenshots/
+│   └── lock_control.ino          # Microcontroller firmware
+├── static/
+│   └── firebaseauth.js           # Firebase authentication handler
+└── templates/
+    ├── access_granted.html        # Access success page
+    ├── capture.html               # Camera capture interface
+    ├── dashboard.html             # Live monitoring dashboard
+    ├── login.html                 # User login page
+    ├── register.html              # User registration page
+    └── verify.html                # Face verification page
 ```
 Setup
 ```bash
